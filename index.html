@@ -106,7 +106,7 @@
                     <p>You can email our founder directly at: <a href="mailto:daniel@revealink.com">daniel@revealink.com</a></p>
                 </div>
 
-                <form id="contact-form" class="contact-form">
+                <form id="contact-form" class="contact-form" onsubmit="return false;">
                     <div class="form-group">
                         <label for="name">Name:</label>
                         <input type="text" id="name" name="name" required>
@@ -131,64 +131,6 @@
                     
                     <button type="submit" class="btn btn-primary">Send Message</button>
                 </form>
-                
-                <script>
-                    // Initialize Formbricks
-                    // Replace 'YOUR_ENVIRONMENT_ID' with your actual Formbricks environment ID
-                    const formbricks = Formbricks.init({
-                        environmentId: "cmhv9otk61282ad018x0z5olp",
-                        apiHost: "https://app.formbricks.com" // or your self-hosted instance
-                    });
-
-                    // Handle form submission
-                    document.getElementById('contact-form').addEventListener('submit', async function(e) {
-                        e.preventDefault();
-                        
-                        const form = e.target;
-                        const formData = new FormData(form);
-                        const messageDiv = document.getElementById('form-message');
-                        const submitButton = form.querySelector('button[type="submit"]');
-                        
-                        // Disable submit button
-                        submitButton.disabled = true;
-                        submitButton.textContent = 'Sending...';
-                        messageDiv.textContent = '';
-                        messageDiv.className = 'form-message';
-                        
-                        try {
-                            // Submit to Formbricks
-                            // Replace 'YOUR_FORM_ID' with your actual Formbricks form ID
-                            const response = await fetch('https://app.formbricks.com/api/v1/forms/cmhv9pz732x3kad01fg0jn6u9/submission', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                    data: {
-                                        name: formData.get('name'),
-                                        email: formData.get('email'),
-                                        phone: formData.get('phone') || '',
-                                        message: formData.get('message')
-                                    }
-                                })
-                            });
-                            
-                            if (response.ok) {
-                                messageDiv.textContent = 'Thank you! Your message has been sent successfully.';
-                                messageDiv.className = 'form-message success';
-                                form.reset();
-                            } else {
-                                throw new Error('Submission failed');
-                            }
-                        } catch (error) {
-                            messageDiv.textContent = 'Sorry, there was an error sending your message. Please email daniel@revealink.com directly.';
-                            messageDiv.className = 'form-message error';
-                        } finally {
-                            submitButton.disabled = false;
-                            submitButton.textContent = 'Send Message';
-                        }
-                    });
-                </script>
             </div>
         </div>
     </section>
@@ -199,6 +141,177 @@
             <p>&copy; 2025 Revealink. All rights reserved.</p>
         </div>
     </footer>
+
+    <script>
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Formbricks
+            let formbricks;
+            if (typeof Formbricks !== 'undefined') {
+                formbricks = Formbricks.init({
+                    environmentId: "cmhv9otk61282ad018x0z5olp",
+                    apiHost: "https://app.formbricks.com"
+                });
+            }
+
+            // Get form element
+            const contactForm = document.getElementById('contact-form');
+            if (!contactForm) {
+                console.error('Contact form not found');
+                return;
+            }
+
+            // Handle form submission
+            contactForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const form = e.target;
+                const formData = new FormData(form);
+                const messageDiv = document.getElementById('form-message');
+                const submitButton = form.querySelector('button[type="submit"]');
+                
+                // Disable submit button
+                submitButton.disabled = true;
+                submitButton.textContent = 'Sending...';
+                messageDiv.textContent = '';
+                messageDiv.className = 'form-message';
+                
+                try {
+                    // Prepare form data
+                    const submissionData = {
+                        name: formData.get('name'),
+                        email: formData.get('email'),
+                        phone: formData.get('phone') || '',
+                        message: formData.get('message')
+                    };
+
+                    // Option 1: Try using Formbricks SDK submit method if available
+                    if (formbricks && typeof formbricks.submit === 'function') {
+                        try {
+                            await formbricks.submit(submissionData);
+                            messageDiv.textContent = 'Thank you! Your message has been sent successfully.';
+                            messageDiv.className = 'form-message success';
+                            form.reset();
+                            submitButton.disabled = false;
+                            submitButton.textContent = 'Send Message';
+                            return;
+                        } catch (sdkError) {
+                            console.warn('Formbricks SDK submit failed, trying API:', sdkError);
+                        }
+                    }
+
+                    // Option 2: Use Formbricks API
+                    // IMPORTANT: Replace the questionId values below with the actual question IDs from your Formbricks form
+                    // To find them: Go to your Formbricks dashboard > Your Form > Edit > Check each question's ID
+                    // The question IDs are usually in format like: "q_abc123" or similar
+                    const response = await fetch('https://app.formbricks.com/api/v1/forms/cmhv9pz732x3kad01fg0jn6u9/submission', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            // If Formbricks requires API authentication, uncomment and add your API key:
+                            // 'Authorization': 'Bearer YOUR_API_KEY',
+                        },
+                        body: JSON.stringify({
+                            responses: [
+                                {
+                                    questionId: 'name', // TODO: Replace with actual question ID from Formbricks form
+                                    value: submissionData.name
+                                },
+                                {
+                                    questionId: 'email', // TODO: Replace with actual question ID from Formbricks form
+                                    value: submissionData.email
+                                },
+                                {
+                                    questionId: 'phone', // TODO: Replace with actual question ID from Formbricks form (if exists)
+                                    value: submissionData.phone
+                                },
+                                {
+                                    questionId: 'message', // TODO: Replace with actual question ID from Formbricks form
+                                    value: submissionData.message
+                                }
+                            ],
+                            finished: true
+                        })
+                    });
+                    
+                    let responseData;
+                    const contentType = response.headers.get('content-type');
+                    
+                    if (contentType && contentType.includes('application/json')) {
+                        try {
+                            responseData = await response.json();
+                        } catch (e) {
+                            responseData = await response.text();
+                        }
+                    } else {
+                        responseData = await response.text();
+                    }
+                    
+                    console.log('Formbricks API Response:', {
+                        status: response.status,
+                        statusText: response.statusText,
+                        data: responseData
+                    });
+                    
+                    if (response.ok) {
+                        messageDiv.textContent = 'Thank you! Your message has been sent successfully.';
+                        messageDiv.className = 'form-message success';
+                        form.reset();
+                    } else {
+                        // Log detailed error for debugging
+                        console.error('Formbricks API Error:', {
+                            status: response.status,
+                            statusText: response.statusText,
+                            data: responseData
+                        });
+                        
+                        // Check if it's a CORS or authentication issue
+                        if (response.status === 401 || response.status === 403) {
+                            throw new Error('Authentication failed. Please check your Formbricks configuration.');
+                        } else if (response.status === 404) {
+                            throw new Error('Form not found. Please verify your Form ID.');
+                        } else {
+                            throw new Error(responseData?.message || responseData?.error || `Submission failed with status ${response.status}`);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Form submission error:', error);
+                    console.error('Error details:', {
+                        message: error.message,
+                        name: error.name,
+                        stack: error.stack
+                    });
+                    
+                    // Check if this is a CORS error (common when testing locally with file://)
+                    const isLocalFile = window.location.protocol === 'file:';
+                    const isCorsError = error.message.includes('Failed to fetch') || 
+                                       error.message.includes('NetworkError') ||
+                                       error.name === 'TypeError';
+                    
+                    // Show more detailed error message for debugging
+                    let errorMessage = 'Sorry, there was an error sending your message. Please email daniel@revealink.com directly.';
+                    
+                    // Provide specific error messages
+                    if (isCorsError && isLocalFile) {
+                        errorMessage = '⚠️ CORS Error: This form needs to be served from a web server (not opened as a file). When deployed to GitHub Pages, this will work correctly. For local testing, use a local server (e.g., `python -m http.server` or `npx serve`).';
+                    } else if (isCorsError) {
+                        errorMessage = 'Network/CORS error. Please check your connection and try again, or email daniel@revealink.com directly.';
+                    } else if (error.message.includes('Authentication')) {
+                        errorMessage = 'Configuration error. Please check your Formbricks settings.';
+                    } else if (error.message.includes('Form not found')) {
+                        errorMessage = 'Form configuration error. Please verify your Form ID.';
+                    }
+                    
+                    messageDiv.textContent = errorMessage;
+                    messageDiv.className = 'form-message error';
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Send Message';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
 
