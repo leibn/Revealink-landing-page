@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revealink - Your Corporate Memory That Never Forgets</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Formbricks SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@formbricks/js@latest/dist/index.umd.js"></script>
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">Revealink</div>
+                <nav class="nav">
+                    <a href="#problem">Problem</a>
+                    <a href="#solution">Solution</a>
+                    <a href="#proof">How It Works</a>
+                    <a href="#features">Features</a>
+                    <a href="#contact">Contact</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="container">
+            <h1>When Your Experts Leave, Their Knowledge Shouldn't.</h1>
+            <p class="hero-subtitle">Revealink is the world's first 'Living Memory' platform. We use a breakthrough Multi-Agent System (MAS) to archive your team's expertise, turning their unwritten, 'tacit knowledge' into a permanent, searchable asset.</p>
+            <div class="cta-buttons">
+                <a href="#contact" class="btn btn-primary">Request a Demo</a>
+                <a href="#contact" class="btn btn-secondary">Become a Design Partner</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section id="problem" class="section">
+        <div class="container">
+            <h2>The $31.5 Billion "Knowledge Leak"</h2>
+            <p>You've felt it. A key employee leaves, and suddenly, no one knows why a critical decision was made. That's 'Tacit Knowledge Leakage.' When an expert leaves your company, 42% of their unique, unwritten knowledge is lost forever. Existing tools find documents; they don't preserve expertise.</p>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section id="solution" class="section">
+        <div class="container">
+            <h2>From a Static Library to a Living Boardroom</h2>
+            <p>Standard knowledge tools (like RAG) are 'Static Libraries.' They give you a list of 10 documents and hope the answer is inside. Revealink is different. We build a 'Living Boardroom' for your company. Our Multi-Agent System creates 'Archived Agents' that learn from your experts and collaborate to synthesize specific, actionable answers.</p>
+        </div>
+    </section>
+
+    <!-- Proof Section -->
+    <section id="proof" class="section">
+        <div class="container">
+            <h2>See the Revealink Difference</h2>
+            <div class="proof-examples">
+                <blockquote class="proof-example proof-standard">
+                    <h3>Standard RAG</h3>
+                    <p class="query"><strong>Query:</strong> "Why did we choose Stripe over Adyen?"</p>
+                    <p class="response"><strong>Standard RAG:</strong> "Found 10 documents related to 'Stripe'..."</p>
+                    <p class="result">Result: Generic, unhelpful.</p>
+                </blockquote>
+                <blockquote class="proof-example proof-revealink">
+                    <h3>Revealink MAS</h3>
+                    <p class="query"><strong>Query:</strong> "Why did we choose Stripe over Adyen?"</p>
+                    <p class="response"><strong>Revealink MAS:</strong> "I consulted @Agent-David (Archived). He said the choice was due to PII security concerns found in a meeting on Oct 15th..."</p>
+                    <p class="result">Result: Specific, actionable.</p>
+                </blockquote>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section">
+        <div class="container">
+            <h2>Enterprise-Ready. CISO-Trusted.</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>Multi-Agent System (MAS)</h3>
+                    <p>Our core IP. A network of collaborative agents that can answer complex, relational questions.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Hybrid GraphRAG Core</h3>
+                    <p>We use graph connections for who/what (relationships) and vector search for why (context).</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Uncompromising Security</h3>
+                    <p>Built for CISO trust with Database-per-Tenant isolation and Pre-reply-masking.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <h2>Partner With Us</h2>
+            <p class="contact-subtitle">We are looking for our first design partners. Get in touch to schedule a demo or learn more about the pilot program.</p>
+            
+            <div class="contact-content">
+                <div class="contact-info">
+                    <p>You can email our founder directly at: <a href="mailto:daniel@revealink.com">daniel@revealink.com</a></p>
+                </div>
+
+                <form id="contact-form" class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Your Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number (Optional):</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Message:</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    
+                    <div id="form-message" class="form-message"></div>
+                    
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+                
+                <script>
+                    // Initialize Formbricks
+                    // Replace 'YOUR_ENVIRONMENT_ID' with your actual Formbricks environment ID
+                    const formbricks = Formbricks.init({
+                        environmentId: "cmhv9otk61282ad018x0z5olp",
+                        apiHost: "https://app.formbricks.com" // or your self-hosted instance
+                    });
+
+                    // Handle form submission
+                    document.getElementById('contact-form').addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        
+                        const form = e.target;
+                        const formData = new FormData(form);
+                        const messageDiv = document.getElementById('form-message');
+                        const submitButton = form.querySelector('button[type="submit"]');
+                        
+                        // Disable submit button
+                        submitButton.disabled = true;
+                        submitButton.textContent = 'Sending...';
+                        messageDiv.textContent = '';
+                        messageDiv.className = 'form-message';
+                        
+                        try {
+                            // Submit to Formbricks
+                            // Replace 'YOUR_FORM_ID' with your actual Formbricks form ID
+                            const response = await fetch('https://app.formbricks.com/api/v1/forms/cmhv9pz732x3kad01fg0jn6u9/submission', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    data: {
+                                        name: formData.get('name'),
+                                        email: formData.get('email'),
+                                        phone: formData.get('phone') || '',
+                                        message: formData.get('message')
+                                    }
+                                })
+                            });
+                            
+                            if (response.ok) {
+                                messageDiv.textContent = 'Thank you! Your message has been sent successfully.';
+                                messageDiv.className = 'form-message success';
+                                form.reset();
+                            } else {
+                                throw new Error('Submission failed');
+                            }
+                        } catch (error) {
+                            messageDiv.textContent = 'Sorry, there was an error sending your message. Please email daniel@revealink.com directly.';
+                            messageDiv.className = 'form-message error';
+                        } finally {
+                            submitButton.disabled = false;
+                            submitButton.textContent = 'Send Message';
+                        }
+                    });
+                </script>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Revealink. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
+
